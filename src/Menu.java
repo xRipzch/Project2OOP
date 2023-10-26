@@ -13,7 +13,6 @@ public class Menu {
         this.reservations = reservations;
     }
 
-    // Your existing Menu class methods like addReservation, deleteReservation, and others
     public void addReservation() {
         int price = 0;
         LocalDateTime timeEnd = null;
@@ -47,31 +46,19 @@ public class Menu {
             addReservation();
         }
 
-
-        for (Reservation existingReservation : reservations) {
-            if (time.isBefore(existingReservation.getTimeEnd()) && timeEnd.isAfter(existingReservation.getTimeStart())) {
-                isAldreaybooked = true;
-            }
+        if(!isSlotAvailable(time, timeEnd)){
+            isAldreaybooked = true;
         }
-        if (isAldreaybooked) {
-            System.out.println("This timeslot is already booked");
-        } else if (hour >= 10 && hour <= 18) {
-            Reservation reservation = new Reservation(name, time, timeEnd, price, false);
 
+       if (!isAldreaybooked) {
+            Reservation reservation = new Reservation(name, time, timeEnd, price, false);
             int index = 0;
             while (index < reservations.size() && reservation.getTimeStart().isAfter(reservations.get(index).getTimeStart())) {
                 index++;
             }
             reservations.add(index, reservation);
-            try {
-                PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
-                for (Reservation fileReservation : reservations) {
-                    ps.println(fileReservation);
-                }
-                ps.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            saveReservationsToFile();
+
 
             System.out.println("Reservation added successfully.");
         } else {
@@ -82,7 +69,7 @@ public class Menu {
 
     public void deleteReservation() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Whats the name of the person you want to delete? (or type 'QUIT')");
+        System.out.println("Enter the name of the person you want to delete (or type 'QUIT')");
         String nameDelete = scanner.nextLine();
         if (nameDelete.equalsIgnoreCase("quit")) run();
 
@@ -168,12 +155,17 @@ public class Menu {
     }
 
     private boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
-        for (Reservation reservation : reservations) {
-            if (!(end.isBefore(reservation.getTimeStart()) || start.isAfter(reservation.getTimeEnd()))) {
-                return false;
+        if (start.getHour() >= 10 && end.getHour() <= 18 && end.isAfter(start)) {
+            for (Reservation reservation : reservations) {
+                if (!(end.isBefore(reservation.getTimeStart()) || start.isAfter(reservation.getTimeEnd()))) {
+                    return false;
+                }
             }
+            return true;
+        } else {
+            System.out.println("Outside of opening hours");
+            return false;
         }
-        return true;
     }
 
     private void checkOut() {
@@ -188,7 +180,7 @@ public class Menu {
                         "\n2. Add product to pris");
                 int choose = scanner.nextInt();
                 switch (choose) {
-                    case 1 -> reservation.setHasPaid();
+                    case 1 -> reservation.setHasPaid(true);
                     case 2 -> {
                         System.out.println("What product do you want to add?" +
                                 "\n1. Shampoo - 65$" +
@@ -220,15 +212,32 @@ public class Menu {
             System.out.println(reservation);
         }
     }
-
-    public void run() {
-        boolean running = true;
-        while (running) {
+        public void printMenu () {
             System.out.println("What do you wish to do?" +
                     "\n1. Add reservation" +
                     "\n2. Delete reservation" +
                     "\n3. See all reservations" +
                     "\n9. Quit");
+
+        }
+        public void saveReservationsToFile () {
+            try {
+                PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
+                for (Reservation fileReservation : reservations) {
+                    ps.println(fileReservation);
+                    //todo ændre til .get name mm. istedet for at have tostring metode under reservation
+                }
+                ps.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+    public void run() {
+        Economy economy = new Economy(reservations);
+        boolean running = true;
+        while (running) {
+            printMenu();
 
             int choose = scanner.nextInt();
             scanner.nextLine();
@@ -240,7 +249,7 @@ public class Menu {
                 case 4 -> testSøgning();
                 case 5 -> ledigeTider();
                 case 6 -> checkOut();
-                //case 7 -> Economy();
+                case 7 -> economy.printEconMenu();
                 case 9 -> running = false;
             }
         }

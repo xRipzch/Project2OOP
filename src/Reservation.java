@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 
 
 public class Reservation {
-    private String name;
+    private String name; // todo make costumer class with name and gender
     private LocalDateTime timeStart;
     private LocalDateTime timeEnd;
     private int price;
@@ -19,26 +19,31 @@ public class Reservation {
     public String getName() {
         return name;
     }
-    
+
     public LocalDateTime getTimeStart() {
         return timeStart;
     }
-    
+
     public LocalDateTime getTimeEnd() {
         return timeEnd;
     }
-    
+
     public int getPrice() {
         return price;
     }
-    
-    
-    
 
-    public boolean setHasPaid() {
+    public boolean getHasPaid() {
         return hasPaid;
     }
 
     public void setPrice(int i) {
+    }
+
+    public void setHasPaid(boolean hasPaid) {
+        this.hasPaid = hasPaid;
+    }
+
+    public String toString() {
+        return name + " has a reservation from " + timeStart + " and ends at " + timeEnd;
     }
 }
