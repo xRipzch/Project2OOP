@@ -175,7 +175,7 @@ public class Menu {
 
         while (!checkoutComplete) {
             System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
-            scanner.nextLine(); // Consume any remaining newline characters
+            scanner.nextLine();
             String name = scanner.nextLine().toLowerCase();
 
             if (name.equalsIgnoreCase("CANCEL")) {
