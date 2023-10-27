@@ -36,7 +36,8 @@ public class Reservation {
         return hasPaid;
     }
 
-    public void setPrice(int i) {
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public void setHasPaid(boolean hasPaid) {

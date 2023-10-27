@@ -19,7 +19,7 @@ public class Menu {
         boolean isAldreaybooked = false;
         Scanner scanner = new Scanner(System.in);
         System.out.println("What's the name of the person getting a haircut?");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().toLowerCase();
         System.out.println("What day of the month?");
         int day = scanner.nextInt();
         System.out.println("What month (1-12)?");
@@ -169,18 +169,23 @@ public class Menu {
     }
 
     private void checkOut() {
-
+        Economy economy = new Economy(reservations);
         System.out.println("Whats the name of the person you are checking out?");
-        String name = scanner.nextLine();
+        String name = scanner.nextLine().toLowerCase();
         for (Reservation reservation : reservations) {
             if (name.equals(reservation.getName())) {
                 System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
                 System.out.println("You have the following options" +
-                        "\n1. Comfirm payment" +
-                        "\n2. Add product to pris");
+                        "\n1. Confirm payment" +
+                        "\n2. Add product");
                 int choose = scanner.nextInt();
                 switch (choose) {
-                    case 1 -> reservation.setHasPaid(true);
+                    case 1 -> {
+                        System.out.println("Payment confirmed");
+                        reservation.setHasPaid(true);
+                        economy.totalEcon();
+                        run();
+                    }
                     case 2 -> {
                         System.out.println("What product do you want to add?" +
                                 "\n1. Shampoo - 65$" +
@@ -189,14 +194,18 @@ public class Menu {
                         switch (product) {
                             case 1 -> {
                                 System.out.println("65$ added");
-                                reservation.setPrice(reservation.getPrice() + 65);
+                                reservation.setPrice(reservation.getPrice()+65);
                                 System.out.println("New TOTAL: " + reservation.getPrice());
+                                reservation.setHasPaid(true);
+                                economy.totalEcon();
                                 run();
                             }
                             case 2 -> {
-                                System.out.println("65$ added");
-                                reservation.setPrice(reservation.getPrice() + 30);
+                                System.out.println("30$ added");
+                                reservation.setPrice(reservation.getPrice()+30);
                                 System.out.println("New TOTAL: " + reservation.getPrice());
+                                reservation.setHasPaid(true);
+                                economy.totalEcon();
                                 run();
                             }
                         }
@@ -207,9 +216,16 @@ public class Menu {
         }
     }
 
+
+
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-            System.out.println(reservation);
+
+            if (reservation.getHasPaid()){
+                System.out.println((reservation) + " [DONE].");
+            } else
+                System.out.println(reservation);
+
         }
     }
         public void printMenu () {
@@ -217,6 +233,10 @@ public class Menu {
                     "\n1. Add reservation" +
                     "\n2. Delete reservation" +
                     "\n3. See all reservations" +
+                    "\n4. Search slots" +
+                    "\n5. See available slots" +
+                    "\n6. Check out" +
+                    "\n7. Economy [Password Protected]" +
                     "\n9. Quit");
 
         }
@@ -238,7 +258,6 @@ public class Menu {
         boolean running = true;
         while (running) {
             printMenu();
-
             int choose = scanner.nextInt();
             scanner.nextLine();
 
@@ -250,7 +269,7 @@ public class Menu {
                 case 5 -> ledigeTider();
                 case 6 -> checkOut();
                 case 7 -> economy.printEconMenu();
-                case 9 -> running = false;
+                case 9 -> System.exit(0);
             }
         }
     }
