@@ -1,7 +1,10 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,42 +19,40 @@ public class Menu {
     public void addReservation() {
         int price = 0;
         LocalDateTime timeEnd = null;
-        boolean isAldreaybooked = false;
+        boolean isAlreadybooked = false;
         Scanner scanner = new Scanner(System.in);
         System.out.println("What's the name of the person getting a haircut?");
         String name = scanner.nextLine().toLowerCase();
-        System.out.println("What day of the month?");
-        int day = scanner.nextInt();
-        System.out.println("What month (1-12)?");
-        int month = scanner.nextInt();
-        System.out.println("What year?");
-        int year = scanner.nextInt();
-        System.out.println("What hour of the day?");
-        int hour = scanner.nextInt();
-        System.out.println("What minute?");
-        int minute = scanner.nextInt();
-        scanner.nextLine();//scanner bug
-        LocalDateTime time = LocalDateTime.of(year, month, day, hour, minute);
+        System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
+        String dateInput = scanner.nextLine();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(dateInput, dateFormatter);
 
+        System.out.println("What time would you like? [HH:mm]");
+        String timeInput = scanner.nextLine();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime timeForCut = LocalTime.parse(timeInput, timeFormatter);
+        LocalDateTime dateTime = LocalDateTime.of(date, timeForCut);
         System.out.println("Is it a male (M) or Female (F)");
-        String mF = scanner.nextLine();
+        String mF = scanner.nextLine();  // skal det ikke være en char og ikke string? måske, men der er gammel kode. Det har vi ikke
+        // ændret i.  ahh alright - Jeg ændrede mellem 26 og 35. brb.
         if (mF.equalsIgnoreCase("m")) {
             price = 250;
-            timeEnd = time.plusMinutes(30);
+            timeEnd = dateTime.plusMinutes(30);
         } else if (mF.equalsIgnoreCase("f")) {
             price = 350;
-            timeEnd = time.plusHours(1);
+            timeEnd = (dateTime.plusHours(1));
         } else {
             System.out.println("invalid gender, try again");
             addReservation();
         }
 
-        if(!isSlotAvailable(time, timeEnd)){
-            isAldreaybooked = true;
+        if (!isSlotAvailable(dateTime, timeEnd)) {
+            isAlreadybooked = true;
         }
 
-       if (!isAldreaybooked) {
-            Reservation reservation = new Reservation(name, time, timeEnd, price, false);
+        if (!isAlreadybooked) {
+            Reservation reservation = new Reservation(name, dateTime, timeEnd, price, false);
             int index = 0;
             while (index < reservations.size() && reservation.getTimeStart().isAfter(reservations.get(index).getTimeStart())) {
                 index++;
@@ -62,7 +63,7 @@ public class Menu {
 
             System.out.println("Reservation added successfully.");
         } else {
-            System.out.println("The choosen time is not in opening hours, try again");
+            System.out.println("Time unavailable, try again");
             addReservation();
         }
     }
@@ -163,7 +164,7 @@ public class Menu {
             }
             return true;
         } else {
-            System.out.println("Outside of opening hours");
+            System.out.println("Time unavailable");
             return false;
         }
     }
@@ -194,7 +195,7 @@ public class Menu {
                         switch (product) {
                             case 1 -> {
                                 System.out.println("65$ added");
-                                reservation.setPrice(reservation.getPrice()+65);
+                                reservation.setPrice(reservation.getPrice() + 65);
                                 System.out.println("New TOTAL: " + reservation.getPrice());
                                 reservation.setHasPaid(true);
                                 economy.totalEcon();
@@ -202,7 +203,7 @@ public class Menu {
                             }
                             case 2 -> {
                                 System.out.println("30$ added");
-                                reservation.setPrice(reservation.getPrice()+30);
+                                reservation.setPrice(reservation.getPrice() + 30);
                                 System.out.println("New TOTAL: " + reservation.getPrice());
                                 reservation.setHasPaid(true);
                                 economy.totalEcon();
@@ -217,49 +218,51 @@ public class Menu {
     }
 
 
-
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
 
-            if (reservation.getHasPaid()){
+            if (reservation.getHasPaid()) {
                 System.out.println((reservation) + " [DONE].");
             } else
                 System.out.println(reservation);
 
         }
     }
-        public void printMenu () {
-            System.out.println("What do you wish to do?" +
-                    "\n1. Add reservation" +
-                    "\n2. Delete reservation" +
-                    "\n3. See all reservations" +
-                    "\n4. Search slots" +
-                    "\n5. See available slots" +
-                    "\n6. Check out" +
-                    "\n7. Economy [Password Protected]" +
-                    "\n9. Quit");
 
-        }
-        public void saveReservationsToFile () {
-            try {
-                PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
-                for (Reservation fileReservation : reservations) {
-                    ps.println(fileReservation);
-                    //todo ændre til .get name mm. istedet for at have tostring metode under reservation
-                }
-                ps.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+    public void printMenu() {
+        System.out.println("What do you wish to do?" +
+                "\n1. Add reservation" +
+                "\n2. Delete reservation" +
+                "\n3. See all reservations" +
+                "\n4. Search slots" +
+                "\n5. See available slots" +
+                "\n6. Check out" +
+                "\n7. Economy [Password Protected]" +
+                "\n9. Quit");
+
+    }
+
+    public void saveReservationsToFile() {
+        try {
+            PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
+            for (Reservation fileReservation : reservations) {
+                ps.println(fileReservation);
+                //todo ændre til .get name mm. istedet for at have tostring metode under reservation
             }
-
+            ps.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+
+    }
+
     public void run() {
         Economy economy = new Economy(reservations);
         boolean running = true;
         while (running) {
             printMenu();
             int choose = scanner.nextInt();
-            scanner.nextLine();
+
 
             switch (choose) {
                 case 1 -> addReservation();
