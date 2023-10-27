@@ -179,7 +179,7 @@ public class Menu {
             String name = scanner.nextLine().toLowerCase();
 
             if (name.equalsIgnoreCase("CANCEL")) {
-                checkoutComplete = true;
+                run();
             } else {
                 for (Reservation reservation : reservations) {
                     if (name.equals(reservation.getName())) {

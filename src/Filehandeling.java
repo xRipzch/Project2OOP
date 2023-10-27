@@ -13,5 +13,3 @@ public class Filehandeling {
         fileScanner.close();
     }
 }
-
-// kan vi kører engag yessir ng ?
