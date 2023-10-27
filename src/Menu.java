@@ -171,51 +171,64 @@ public class Menu {
 
     private void checkOut() {
         Economy economy = new Economy(reservations);
-        System.out.println("Whats the name of the person you are checking out?");
-        String name = scanner.nextLine().toLowerCase();
-        for (Reservation reservation : reservations) {
-            if (name.equals(reservation.getName())) {
-                System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
-                System.out.println("You have the following options" +
-                        "\n1. Confirm payment" +
-                        "\n2. Add product");
-                int choose = scanner.nextInt();
-                switch (choose) {
-                    case 1 -> {
-                        System.out.println("Payment confirmed");
-                        reservation.setHasPaid(true);
-                        economy.totalEcon();
-                        run();
-                    }
-                    case 2 -> {
-                        System.out.println("What product do you want to add?" +
-                                "\n1. Shampoo - 65$" +
-                                "\n2. Gel - 30$");
-                        int product = scanner.nextInt();
-                        switch (product) {
-                            case 1 -> {
-                                System.out.println("65$ added");
-                                reservation.setPrice(reservation.getPrice() + 65);
-                                System.out.println("New TOTAL: " + reservation.getPrice());
-                                reservation.setHasPaid(true);
-                                economy.totalEcon();
-                                run();
+        boolean checkoutComplete = false;
+
+        while (!checkoutComplete) {
+            System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
+            scanner.nextLine(); // Consume any remaining newline characters
+            String name = scanner.nextLine().toLowerCase();
+
+            if (name.equalsIgnoreCase("CANCEL")) {
+                checkoutComplete = true;
+            } else {
+                for (Reservation reservation : reservations) {
+                    if (name.equals(reservation.getName())) {
+                        System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
+                        System.out.println("You have the following options" +
+                                "\n1. Confirm payment" +
+                                "\n2. Add product");
+                        int choose = scanner.nextInt();
+
+                        if (choose == 1) {
+                            System.out.println("Payment confirmed");
+                            reservation.setHasPaid(true);
+                            economy.totalEcon();
+                            checkoutComplete = true;
+                        } else if (choose == 2) {
+                            boolean productAdded = false;
+                            while (!productAdded) {
+                                System.out.println("What product do you want to add?" +
+                                        "\n1. Shampoo - 65$" +
+                                        "\n2. Gel - 30$");
+                                int product = scanner.nextInt();
+                                if (product == 1) {
+                                    System.out.println("65$ added");
+                                    reservation.setPrice(reservation.getPrice() + 65);
+                                    System.out.println("New TOTAL: " + reservation.getPrice());
+                                    reservation.setHasPaid(true);
+                                    economy.totalEcon();
+                                    productAdded = true;
+                                } else if (product == 2) {
+                                    System.out.println("30$ added");
+                                    reservation.setPrice(reservation.getPrice() + 30);
+                                    System.out.println("New TOTAL: " + reservation.getPrice());
+                                    reservation.setHasPaid(true);
+                                    economy.totalEcon();
+                                    productAdded = true;
+                                }
                             }
-                            case 2 -> {
-                                System.out.println("30$ added");
-                                reservation.setPrice(reservation.getPrice() + 30);
-                                System.out.println("New TOTAL: " + reservation.getPrice());
-                                reservation.setHasPaid(true);
-                                economy.totalEcon();
-                                run();
-                            }
+                            checkoutComplete = true;
                         }
                     }
                 }
-            }
 
+                if (!checkoutComplete) {
+                    System.out.println("Reservation not found. Please try again.");
+                }
+            }
         }
     }
+
 
 
     public void seeAllReservations() {
