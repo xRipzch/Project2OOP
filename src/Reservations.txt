@@ -1,2 +1,1 @@
 anders has a reservation from 2023-12-23T12:30 and ends at 2023-12-23T13:00
-julie has a reservation from 2024-01-22T14:00 and ends at 2024-01-22T15:00

@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    private ArrayList<Reservation> reservations;
-    private Scanner scanner = new Scanner(System.in);
+    ArrayList<Reservation> reservations;
+    Economy economy = new Economy(reservations);
+    private final Scanner scanner = new Scanner(System.in);
 
     public Menu(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
@@ -34,8 +35,7 @@ public class Menu {
         LocalTime timeForCut = LocalTime.parse(timeInput, timeFormatter);
         LocalDateTime dateTime = LocalDateTime.of(date, timeForCut);
         System.out.println("Is it a male (M) or Female (F)");
-        String mF = scanner.nextLine();  // skal det ikke være en char og ikke string? måske, men der er gammel kode. Det har vi ikke
-        // ændret i.  ahh alright - Jeg ændrede mellem 26 og 35. brb.
+        String mF = scanner.nextLine();
         if (mF.equalsIgnoreCase("m")) {
             price = 250;
             timeEnd = dateTime.plusMinutes(30);
@@ -151,7 +151,7 @@ public class Menu {
             if (isSlotAvailable(startOfDayPlusDuration, endOfSlot)) {
                 System.out.println("From " + startOfDayPlusDuration.toLocalTime() + " to " + endOfSlot.toLocalTime());
             }
-            startOfDayPlusDuration = endOfSlot;
+            startOfDayPlusDuration = startOfDayPlusDuration.plusMinutes(slotDurationMinutes);
         }
     }
 
@@ -192,7 +192,7 @@ public class Menu {
                         if (choose == 1) {
                             System.out.println("Payment confirmed");
                             reservation.setHasPaid(true);
-                            economy.totalEcon();
+
                             checkoutComplete = true;
                         } else if (choose == 2) {
                             boolean productAdded = false;
@@ -230,15 +230,12 @@ public class Menu {
     }
 
 
-
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-
             if (reservation.getHasPaid()) {
                 System.out.println((reservation) + " [DONE].");
             } else
                 System.out.println(reservation);
-
         }
     }
 
@@ -270,12 +267,10 @@ public class Menu {
     }
 
     public void run() {
-        Economy economy = new Economy(reservations);
         boolean running = true;
         while (running) {
             printMenu();
             int choose = scanner.nextInt();
-
 
             switch (choose) {
                 case 1 -> addReservation();

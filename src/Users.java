@@ -97,7 +97,7 @@ public class Users {
                 case 2 -> Economy.totalEcon();
                 case 3 -> readFile();
                 case 4 -> Economy.todayEcon();
-                case 9 -> menu.run();
+                case 9 -> menu.printMenu();
             }
 
 
