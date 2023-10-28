@@ -266,7 +266,15 @@ public class Menu {
 
     }
 
+    public void loadFiles () {
+        FileHandling fileHandling = new FileHandling();
+        fileHandling.loadReservationsFromFile(reservations);
+    }
+
+
+
     public void run() {
+        loadFiles();
         boolean running = true;
         while (running) {
             printMenu();
