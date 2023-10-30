@@ -24,7 +24,7 @@ public class Menu {
         boolean isAlreadybooked = false;
         Scanner scanner = new Scanner(System.in);
         System.out.println("What's the name of the person getting a haircut?");
-        String name = scanner.nextLine().toLowerCase();
+        String name = scanner.nextLine();
         System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
         String dateInput = scanner.nextLine();
         dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -163,7 +163,7 @@ public class Menu {
         while (!checkoutComplete) {
             System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
             scanner.nextLine();
-            String name = scanner.nextLine().toLowerCase();
+            String name = scanner.nextLine();
 
             if (name.equalsIgnoreCase("CANCEL")) {
                 run();
@@ -219,6 +219,7 @@ public class Menu {
             }
         }
     }
+
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
