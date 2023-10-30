@@ -45,6 +45,6 @@ public class Reservation {
     }
 
     public String toString() {
-        return name + " has a reservation from " + timeStart + " and ends at " + timeEnd;
+        return     name+","+timeStart.getYear()+","+timeStart.getMonthValue()+","+timeStart.getDayOfMonth()+","+timeStart.getHour()+","+timeStart.getMinute()+","+ timeEnd.getYear()+","+timeEnd.getMonthValue()+","+timeEnd.getDayOfMonth()+","+timeEnd.getHour()+","+timeEnd.getMinute()+","+price+","+hasPaid+","+gender;
     }
 }

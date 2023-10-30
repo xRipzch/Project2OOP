@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.io.PrintStream;
@@ -64,7 +63,7 @@ public class Economy {
 
 
     }
-    public static void totalEcon() {
+    public static void writeToEconFile() {
 
         int total = 0;
         for (Reservation reservationTotal : reservations) {

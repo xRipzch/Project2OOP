@@ -12,6 +12,7 @@ public class Menu {
     ArrayList<Reservation> reservations;
     Economy economy = new Economy(reservations);
     private final Scanner scanner = new Scanner(System.in);
+    DateTimeFormatter dateFormatter;
 
     public Menu(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
@@ -26,7 +27,7 @@ public class Menu {
         String name = scanner.nextLine().toLowerCase();
         System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
         String dateInput = scanner.nextLine();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate date = LocalDate.parse(dateInput, dateFormatter);
 
         System.out.println("What time would you like? [HH:mm]");
@@ -86,6 +87,7 @@ public class Menu {
                 if (deleteYesNo.equalsIgnoreCase("y")) {
                     reservations.remove(reservation);
                     System.out.println("Deletion successful");
+                    saveReservationsToFile();
                     run();
                 } else if (deleteYesNo.equalsIgnoreCase("n")) {
                     System.out.println("Deletion stopped, back to menu");
@@ -192,6 +194,8 @@ public class Menu {
                         if (choose == 1) {
                             System.out.println("Payment confirmed");
                             reservation.setHasPaid(true);
+                            economy.writeToEconFile();
+                            saveReservationsToFile();
 
                             checkoutComplete = true;
                         } else if (choose == 2) {
@@ -206,15 +210,17 @@ public class Menu {
                                     reservation.setPrice(reservation.getPrice() + 65);
                                     System.out.println("New TOTAL: " + reservation.getPrice());
                                     reservation.setHasPaid(true);
-                                    economy.totalEcon();
+                                    economy.writeToEconFile();
                                     productAdded = true;
+                                    saveReservationsToFile();
                                 } else if (product == 2) {
                                     System.out.println("30$ added");
                                     reservation.setPrice(reservation.getPrice() + 30);
                                     System.out.println("New TOTAL: " + reservation.getPrice());
                                     reservation.setHasPaid(true);
-                                    economy.totalEcon();
+                                    economy.writeToEconFile();
                                     productAdded = true;
+                                    saveReservationsToFile();
                                 }
                             }
                             checkoutComplete = true;
@@ -228,7 +234,6 @@ public class Menu {
             }
         }
     }
-
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
@@ -257,7 +262,8 @@ public class Menu {
             PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
             for (Reservation fileReservation : reservations) {
                 ps.println(fileReservation);
-                //todo ændre til .get name mm. istedet for at have tostring metode under reservation
+
+
             }
             ps.close();
         } catch (FileNotFoundException e) {
@@ -266,11 +272,10 @@ public class Menu {
 
     }
 
-    public void loadFiles () {
+    public void loadFiles() {
         FileHandling fileHandling = new FileHandling();
         fileHandling.loadReservationsFromFile(reservations);
     }
-
 
 
     public void run() {
@@ -284,10 +289,9 @@ public class Menu {
                 case 1 -> addReservation();
                 case 2 -> deleteReservation();
                 case 3 -> seeAllReservations();
-                case 4 -> testSøgning();
-                case 5 -> ledigeTider();
-                case 6 -> checkOut();
-                case 7 -> economy.printEconMenu();
+                case 4 -> ledigeTider();
+                case 5 -> checkOut();
+                case 6 -> economy.printEconMenu();
                 case 9 -> System.exit(0);
             }
         }

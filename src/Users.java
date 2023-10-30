@@ -1,13 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Users {
     private boolean loggedIn;
     private String name;
+
+
 
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
@@ -24,6 +24,7 @@ public class Users {
 
     public Users(String name) {
         setName(name);
+
     }
 
     public void logIn() {
@@ -86,17 +87,15 @@ public class Users {
             ArrayList<Reservation> reservations = new ArrayList<>();
             Menu menu = new Menu(reservations);
             System.out.println("1. Search economy");
-            System.out.println("2. Total economy");
-            System.out.println("3. Print economy");
-            System.out.println("4. Today's profits.");
+            System.out.println("2. Print economy");
+            System.out.println("3. Today's profits.");
             System.out.println("9. Back to menu");
             choose = scanner.nextInt();
 
             switch (choose) {
                 case 1 -> Economy.searchEcon();
-                case 2 -> Economy.totalEcon();
-                case 3 -> readFile();
-                case 4 -> Economy.todayEcon();
+                case 2 -> readFile();
+                case 3-> Economy.todayEcon();
                 case 9 -> menu.printMenu();
             }
 
