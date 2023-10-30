@@ -7,13 +7,15 @@ public class Reservation {
     private LocalDateTime timeEnd;
     private int price;
     private boolean hasPaid;
+    private String gender;
 
-    public Reservation(String name, LocalDateTime timeStart, LocalDateTime timeEnd, int price, boolean hasPaid) {
+    public Reservation(String name, LocalDateTime timeStart, LocalDateTime timeEnd, int price, boolean hasPaid,String gender) {
         this.name = name;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.price = price;
         this.hasPaid = hasPaid;
+        this.gender = gender;
     }
 
     public String getName() {
@@ -34,6 +36,10 @@ public class Reservation {
 
     public boolean getHasPaid() {
         return hasPaid;
+    }
+
+    public String getGender(){
+        return gender;
     }
 
     public void setPrice(int price) {

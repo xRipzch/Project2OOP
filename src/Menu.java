@@ -53,7 +53,7 @@ public class Menu {
         }
 
         if (!isAlreadybooked) {
-            Reservation reservation = new Reservation(name, dateTime, timeEnd, price, false);
+            Reservation reservation = new Reservation(name, dateTime, timeEnd, price, false, mF);
             int index = 0;
             while (index < reservations.size() && reservation.getTimeStart().isAfter(reservations.get(index).getTimeStart())) {
                 index++;
@@ -101,35 +101,20 @@ public class Menu {
         }
     }
 
-    public void testSøgning() {
-        System.out.println("What day of the month?");
-        int day = scanner.nextInt();
-        System.out.println("What month (1-12)?");
-        int month = scanner.nextInt();
-        System.out.println("What year?");
-        int year = scanner.nextInt();
-        int hour = 0;
-        int minute = 0;
-
-        LocalDateTime timeStart = LocalDateTime.of(year, month, day, hour, minute);
-        Boolean foundReservations = false;
-        for (Reservation reservation : reservations) {
-            if (reservation.getTimeStart().toLocalDate().isEqual(timeStart.toLocalDate())) {
-                System.out.println(reservation);
-                foundReservations = true;
-            }
-        }
-        if (!foundReservations) System.out.println("Nothing found on " + timeStart.toLocalDate());
-    }
 
     public void ledigeTider() {
-        System.out.println("What day of the month?");
-        int day = scanner.nextInt();
-        System.out.println("What month (1-12)?");
-        int month = scanner.nextInt();
-        System.out.println("What year?");
-        int year = scanner.nextInt();
-        scanner.nextLine(); // Scannerbug
+       scanner.nextLine(); // scanner bug
+        System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
+        String dateInput = scanner.nextLine();
+         dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate date = LocalDate.parse(dateInput, dateFormatter);
+        String timeInput = "00:00";
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime timeForCut = LocalTime.parse(timeInput, timeFormatter);
+        LocalDateTime dateTime = LocalDateTime.of(date, timeForCut);
+        int year = dateTime.getYear();
+        int month = dateTime.getMonthValue();
+        int day = dateTime.getDayOfMonth();
 
         System.out.println("Is it male or female haircut? (M/F)");
         String mF = scanner.nextLine();
@@ -158,18 +143,18 @@ public class Menu {
     }
 
     private boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
-        if (start.getHour() >= 10 && end.getHour() <= 18 && end.isAfter(start)) {
+        if (start.getHour() >= 10 && (end.getHour() < 18 || (end.getHour() == 18 && end.getMinute() == 0)) && end.isAfter(start)) {
             for (Reservation reservation : reservations) {
-                if (!(end.isBefore(reservation.getTimeStart()) || start.isAfter(reservation.getTimeEnd()))) {
+                if (start.isBefore(reservation.getTimeEnd()) && end.isAfter(reservation.getTimeStart())) {
                     return false;
                 }
             }
             return true;
         } else {
-            System.out.println("Time unavailable");
             return false;
         }
     }
+
 
     private void checkOut() {
         Economy economy = new Economy(reservations);
@@ -237,10 +222,11 @@ public class Menu {
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-            if (reservation.getHasPaid()) {
-                System.out.println((reservation) + " [DONE].");
-            } else
-                System.out.println(reservation);
+            System.out.println("Reservation for :"+reservation.getName()+" - from "+reservation.getTimeStart().getHour()+":"+reservation.getTimeStart().getMinute()+ " to "+reservation.getTimeEnd().getHour()+":"+reservation.getTimeEnd().getMinute());
+            System.out.println(reservation.getTimeStart().getDayOfMonth()+"-"+reservation.getTimeStart().getMonthValue()+"-"+reservation.getTimeStart().getYear());
+            if(reservation.getHasPaid()){
+                System.out.println("The pris is "+reservation.getPrice()+"$ and has been paid!");
+            }else System.out.println("The pris is "+reservation.getPrice()+"$ and has not been paid!");
         }
     }
 
@@ -249,10 +235,9 @@ public class Menu {
                 "\n1. Add reservation" +
                 "\n2. Delete reservation" +
                 "\n3. See all reservations" +
-                "\n4. Search slots" +
-                "\n5. See available slots" +
-                "\n6. Check out" +
-                "\n7. Economy [Password Protected]" +
+                "\n4. See available slots" +
+                "\n5. Check out" +
+                "\n6. Economy [Password Protected]" +
                 "\n9. Quit");
 
     }

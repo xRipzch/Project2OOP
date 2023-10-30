@@ -10,7 +10,7 @@ public class Economy {
     Users users = new Users("User");
     private static ArrayList<Reservation> reservations;
 
-    public Economy(ArrayList<Reservation> reservations) {
+    public Economy (ArrayList<Reservation> reservations) {
         Economy.reservations = reservations;
     }
 
