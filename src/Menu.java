@@ -168,7 +168,7 @@ public class Menu {
             String name = scanner.nextLine();
 
             if (name.equalsIgnoreCase("CANCEL")) {
-                run();
+                return;
             } else {
                 Reservation foundReservation = findReservationByName(name);
                 if (foundReservation != null) {
