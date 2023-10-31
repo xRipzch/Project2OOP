@@ -257,13 +257,31 @@ public class Menu {
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-            System.out.println("Reservation for :" + reservation.getName() + " - from " + reservation.getTimeStart().getHour() + ":" + reservation.getTimeStart().getMinute() + " to " + reservation.getTimeEnd().getHour() + ":" + reservation.getTimeEnd().getMinute());
-            System.out.println(reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear());
-            if (reservation.getHasPaid()) {
-                System.out.println("The pris is " + reservation.getPrice() + "$ and has been paid!");
-            } else System.out.println("The pris is " + reservation.getPrice() + "$ and has not been paid!");
+            int startHour = reservation.getTimeStart().getHour();
+            int startMinute = reservation.getTimeStart().getMinute();
+            int endHour = reservation.getTimeEnd().getHour();
+            int endMinute = reservation.getTimeEnd().getMinute();
+            String startTime;
+            String endTime;
+            String paymentStatus;
+
+            if (startMinute == 0) {startTime = startHour + ":00";}
+            else {startTime = startHour + ":" + startMinute;}
+
+            if (endMinute == 0) {endTime = endHour + ":00";}
+            else {endTime = endHour + ":" + endMinute;}
+
+            String date = reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear();
+
+            if (reservation.getHasPaid()) {paymentStatus = "has been paid!";}
+            else {paymentStatus = "has not been paid!";}
+
+            String time = "from " + startTime + " to " + endTime + " on " + date;
+
+            System.out.println("Reservation for: " + reservation.getName() + " - " + time + ". The price is $" + reservation.getPrice() + " and " + paymentStatus);
         }
     }
+
 
     public void printMenu() {
         System.out.println("What do you wish to do?" +
