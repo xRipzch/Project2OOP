@@ -7,14 +7,15 @@ import java.util.Scanner;
 
 
 public class Economy {
-    Users users = new Users("User");
-    private static ArrayList<Reservation> reservations;
+    private ArrayList<Reservation> reservations;
+    private Users users;
 
-    public Economy (ArrayList<Reservation> reservations) {
-        Economy.reservations = reservations;
+    public Economy(ArrayList<Reservation> reservations) {
+        this.reservations = reservations;
+        this.users = new Users("User", this);
     }
 
-    public static void todayEcon() {
+    public void todayEcon() {
         int total = 0;
         LocalDateTime timeStart = LocalDateTime.now();
 
@@ -33,10 +34,9 @@ public class Economy {
     }
 
     public void printEconMenu() {
-        Users users = new Users("User");
         users.logIn();
     }
-    public static void searchEcon(){
+    public void searchEcon(){
         Scanner scanner = new Scanner(System.in);
         int total = 0;
         System.out.println("What day of the month?");
@@ -63,7 +63,7 @@ public class Economy {
 
 
     }
-    public static void writeToEconFile() {
+    public void writeToEconFile() {
 
         int total = 0;
         for (Reservation reservationTotal : reservations) {

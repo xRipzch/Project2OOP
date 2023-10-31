@@ -10,13 +10,14 @@ import java.util.Scanner;
 
 public class Menu {
     ArrayList<Reservation> reservations;
-    Economy economy = new Economy(reservations);
+    Economy economy;
     private final Scanner scanner = new Scanner(System.in);
     DateTimeFormatter dateFormatter;
     boolean checkoutComplete = false;
 
     public Menu(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
+        this.economy = new Economy(reservations);
     }
 
     public void addReservation() {

@@ -6,6 +6,8 @@ import java.util.Scanner;
 public class Users {
     private boolean loggedIn;
     private String name;
+    private Economy economy;
+
 
 
 
@@ -22,10 +24,11 @@ public class Users {
     }
 
 
-    public Users(String name) {
+    public Users(String name, Economy economy) {
         setName(name);
-
+        this.economy = economy;
     }
+
 
     public void logIn() {
 
@@ -93,9 +96,9 @@ public class Users {
             choose = scanner.nextInt();
 
             switch (choose) {
-                case 1 -> Economy.searchEcon();
+                case 1 -> economy.searchEcon();
                 case 2 -> readFile();
-                case 3-> Economy.todayEcon();
+                case 3 -> economy.todayEcon();
                 case 9 -> menu.printMenu();
             }
 
