@@ -1,8 +1,8 @@
-public class Admin extends Users{
-    private  String password;
+public class Admin extends Users {
+    private String password;
 
-    public Admin(String name, String password) {
-        super(name);
+    public Admin(String name, String password, Economy economy) {
+        super(name, economy);
         setPassword(password);
     }
 

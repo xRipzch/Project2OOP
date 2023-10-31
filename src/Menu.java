@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,13 +11,14 @@ import java.util.Scanner;
 
 public class Menu {
     ArrayList<Reservation> reservations;
-    Economy economy = new Economy(reservations);
+    Economy economy;
     private final Scanner scanner = new Scanner(System.in);
     DateTimeFormatter dateFormatter;
     boolean checkoutComplete = false;
 
     public Menu(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
+        this.economy = new Economy(reservations);
     }
 
     public void addReservation() {
@@ -146,7 +148,7 @@ public class Menu {
     }
 
     private boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
-        if (start.getHour() >= 10 && (end.getHour() < 18 || (end.getHour() == 18 && end.getMinute() == 0)) && end.isAfter(start)) {
+        if (start.getHour() >= 10 && start.getHour() < 18 && start.getDayOfWeek() != DayOfWeek.SATURDAY && start.getDayOfWeek() != DayOfWeek.SUNDAY && end.isAfter(start)) {
             for (Reservation reservation : reservations) {
                 if (start.isBefore(reservation.getTimeEnd()) && end.isAfter(reservation.getTimeStart())) {
                     return false;
@@ -157,6 +159,7 @@ public class Menu {
             return false;
         }
     }
+
 
 
     private void checkOut() {
@@ -257,13 +260,31 @@ public class Menu {
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-            System.out.println("Reservation for :" + reservation.getName() + " - from " + reservation.getTimeStart().getHour() + ":" + reservation.getTimeStart().getMinute() + " to " + reservation.getTimeEnd().getHour() + ":" + reservation.getTimeEnd().getMinute());
-            System.out.println(reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear());
-            if (reservation.getHasPaid()) {
-                System.out.println("The pris is " + reservation.getPrice() + "$ and has been paid!");
-            } else System.out.println("The pris is " + reservation.getPrice() + "$ and has not been paid!");
+            int startHour = reservation.getTimeStart().getHour();
+            int startMinute = reservation.getTimeStart().getMinute();
+            int endHour = reservation.getTimeEnd().getHour();
+            int endMinute = reservation.getTimeEnd().getMinute();
+            String startTime;
+            String endTime;
+            String paymentStatus;
+
+            if (startMinute == 0) {startTime = startHour + ":00";}
+            else {startTime = startHour + ":" + startMinute;}
+
+            if (endMinute == 0) {endTime = endHour + ":00";}
+            else {endTime = endHour + ":" + endMinute;}
+
+            String date = reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear();
+
+            if (reservation.getHasPaid()) {paymentStatus = "has been paid!";}
+            else {paymentStatus = "has not been paid!";}
+
+            String time = "from " + startTime + " to " + endTime + " on " + date;
+
+            System.out.println("Reservation for: " + reservation.getName() + " - " + time + ". The price is $" + reservation.getPrice() + " and " + paymentStatus);
         }
     }
+
 
     public void printMenu() {
         System.out.println("What do you wish to do?" +
