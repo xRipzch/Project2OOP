@@ -74,7 +74,9 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the name of the person you want to delete (or type 'QUIT')");
         String nameDelete = scanner.nextLine();
-        if (nameDelete.equalsIgnoreCase("quit")) run();
+        if (nameDelete.equalsIgnoreCase("quit")) {
+            return;
+        }
 
         boolean reservationFound = false;
         for (Reservation reservation : reservations) {
@@ -89,10 +91,10 @@ public class Menu {
                     reservations.remove(reservation);
                     System.out.println("Deletion successful");
                     saveReservationsToFile();
-                    run();
+                    return;
                 } else if (deleteYesNo.equalsIgnoreCase("n")) {
                     System.out.println("Deletion stopped, back to menu");
-                    run();
+                    return;
                 } else System.out.println("invalid option, try again");
                 deleteReservation();
             }
