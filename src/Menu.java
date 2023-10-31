@@ -13,6 +13,7 @@ public class Menu {
     Economy economy = new Economy(reservations);
     private final Scanner scanner = new Scanner(System.in);
     DateTimeFormatter dateFormatter;
+    boolean checkoutComplete = false;
 
     public Menu(ArrayList<Reservation> reservations) {
         this.reservations = reservations;
@@ -103,10 +104,10 @@ public class Menu {
 
 
     public void ledigeTider() {
-       scanner.nextLine(); // scanner bug
+        scanner.nextLine(); // scanner bug
         System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
         String dateInput = scanner.nextLine();
-         dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate date = LocalDate.parse(dateInput, dateFormatter);
         String timeInput = "00:00";
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -158,7 +159,6 @@ public class Menu {
 
     private void checkOut() {
         Economy economy = new Economy(reservations);
-        boolean checkoutComplete = false;
 
         while (!checkoutComplete) {
             System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
@@ -168,66 +168,98 @@ public class Menu {
             if (name.equalsIgnoreCase("CANCEL")) {
                 run();
             } else {
-                for (Reservation reservation : reservations) {
-                    if (name.equals(reservation.getName())) {
-                        System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
-                        System.out.println("You have the following options" +
-                                "\n1. Confirm payment" +
-                                "\n2. Add product");
-                        int choose = scanner.nextInt();
-
-                        if (choose == 1) {
-                            System.out.println("Payment confirmed");
-                            reservation.setHasPaid(true);
-                            economy.writeToEconFile();
-                            saveReservationsToFile();
-
-                            checkoutComplete = true;
-                        } else if (choose == 2) {
-                            boolean productAdded = false;
-                            while (!productAdded) {
-                                System.out.println("What product do you want to add?" +
-                                        "\n1. Shampoo - 65$" +
-                                        "\n2. Gel - 30$");
-                                int product = scanner.nextInt();
-                                if (product == 1) {
-                                    System.out.println("65$ added");
-                                    reservation.setPrice(reservation.getPrice() + 65);
-                                    System.out.println("New TOTAL: " + reservation.getPrice());
-                                    reservation.setHasPaid(true);
-                                    economy.writeToEconFile();
-                                    productAdded = true;
-                                    saveReservationsToFile();
-                                } else if (product == 2) {
-                                    System.out.println("30$ added");
-                                    reservation.setPrice(reservation.getPrice() + 30);
-                                    System.out.println("New TOTAL: " + reservation.getPrice());
-                                    reservation.setHasPaid(true);
-                                    economy.writeToEconFile();
-                                    productAdded = true;
-                                    saveReservationsToFile();
-                                }
-                            }
-                            checkoutComplete = true;
-                        }
-                    }
-                }
-
-                if (!checkoutComplete) {
+                Reservation foundReservation = findReservationByName(name);
+                if (foundReservation != null) {
+                    processReservation(foundReservation, economy);
+                    checkoutComplete = true;
+                } else {
                     System.out.println("Reservation not found. Please try again.");
                 }
             }
         }
     }
 
+    private Reservation findReservationByName(String name) {
+        for (Reservation reservation : reservations) {
+            if (name.equals(reservation.getName())) {
+                return reservation;
+            }
+        }
+        return null;
+    }
+
+    private void processReservation(Reservation reservation, Economy economy) {
+        System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
+        System.out.println("You have the following options" +
+                "\n1. Confirm payment" +
+                "\n2. Add product");
+        int choose = scanner.nextInt();
+
+        if (choose == 1) {
+            confirmPayment(reservation, economy);
+        } else if (choose == 2) {
+            addProduct(reservation, economy);
+        }
+    }
+
+    private void confirmPayment(Reservation reservation, Economy economy) {
+        System.out.println("Payment confirmed");
+        reservation.setHasPaid(true);
+        economy.writeToEconFile();
+        saveReservationsToFile();
+    }
+
+    private void addProduct(Reservation reservation, Economy economy) {
+        boolean productAdded = false;
+        while (!productAdded) {
+            System.out.println("What product do you want to add?" +
+                    "\n1. Shampoo - 65$" +
+                    "\n2. Gel - 30$");
+            int product = scanner.nextInt();
+            if (product == 1) {
+                System.out.println("65$ added");
+                reservation.setPrice(reservation.getPrice() + 65);
+                System.out.println("New TOTAL: " + reservation.getPrice());
+                reservation.setHasPaid(true);
+                economy.writeToEconFile();
+                productAdded = true;
+                saveReservationsToFile();
+                checkoutConfirmation();
+            } else if (product == 2) {
+                System.out.println("30$ added");
+                reservation.setPrice(reservation.getPrice() + 30);
+                System.out.println("New TOTAL: " + reservation.getPrice());
+                reservation.setHasPaid(true);
+                economy.writeToEconFile();
+                productAdded = true;
+                saveReservationsToFile();
+                checkoutConfirmation();
+            }
+        }
+    }
+
+    private void checkoutConfirmation() {
+        System.out.println("Procced with checkout? (Y/N)");
+        String proceed = scanner.next();
+        if (proceed.equalsIgnoreCase("y")) {
+            System.out.println("Payment confirmed");
+            checkoutComplete = true;
+        } else if (proceed.equalsIgnoreCase("n")) {
+            System.out.println("Payment not confirmed");
+            run();
+        } else {
+            System.out.println("Invalid input, try again");
+        }
+    }
+
 
     public void seeAllReservations() {
         for (Reservation reservation : reservations) {
-            System.out.println("Reservation for :"+reservation.getName()+" - from "+reservation.getTimeStart().getHour()+":"+reservation.getTimeStart().getMinute()+ " to "+reservation.getTimeEnd().getHour()+":"+reservation.getTimeEnd().getMinute());
-            System.out.println(reservation.getTimeStart().getDayOfMonth()+"-"+reservation.getTimeStart().getMonthValue()+"-"+reservation.getTimeStart().getYear());
-            if(reservation.getHasPaid()){
-                System.out.println("The pris is "+reservation.getPrice()+"$ and has been paid!");
-            }else System.out.println("The pris is "+reservation.getPrice()+"$ and has not been paid!");
+            System.out.println("Reservation for :" + reservation.getName() + " - from " + reservation.getTimeStart().getHour() + ":" + reservation.getTimeStart().getMinute() + " to " + reservation.getTimeEnd().getHour() + ":" + reservation.getTimeEnd().getMinute());
+            System.out.println(reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear());
+            if (reservation.getHasPaid()) {
+                System.out.println("The pris is " + reservation.getPrice() + "$ and has been paid!");
+            } else System.out.println("The pris is " + reservation.getPrice() + "$ and has not been paid!");
         }
     }
 
