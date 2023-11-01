@@ -303,8 +303,6 @@ public class Menu {
             PrintStream ps = new PrintStream(new FileOutputStream("Reservations.txt"), true);
             for (Reservation fileReservation : reservations) {
                 ps.println(fileReservation);
-
-
             }
             ps.close();
         } catch (FileNotFoundException e) {
