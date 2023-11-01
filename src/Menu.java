@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -153,7 +154,7 @@ public class Menu {
     }
 
     private boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
-        if (start.getHour() >= 10 && (end.getHour() < 18 || (end.getHour() == 18 && end.getMinute() == 0)) && end.isAfter(start)) {
+        if (start.getHour() >= 10 && start.getHour() < 18 && start.getDayOfWeek() != DayOfWeek.SATURDAY && start.getDayOfWeek() != DayOfWeek.SUNDAY && end.isAfter(start)) {
             for (Reservation reservation : reservations) {
                 if (start.isBefore(reservation.getTimeEnd()) && end.isAfter(reservation.getTimeStart())) {
                     return false;
@@ -166,6 +167,7 @@ public class Menu {
     }
 
 
+
     private void checkOut() {
         Economy economy = new Economy(reservations);
 
@@ -175,7 +177,7 @@ public class Menu {
             String name = scanner.nextLine();
 
             if (name.equalsIgnoreCase("CANCEL")) {
-                run();
+                return;
             } else {
                 Reservation foundReservation = findReservationByName(name);
                 if (foundReservation != null) {
