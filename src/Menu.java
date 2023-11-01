@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,6 +23,7 @@ public class Menu {
 
     public void addReservation() {
         int price = 0;
+        LocalDate date;
         LocalDateTime timeEnd = null;
         boolean isAlreadybooked = false;
         Scanner scanner = new Scanner(System.in);
@@ -30,8 +32,12 @@ public class Menu {
         System.out.println("What day would you like to get a haircut? [dd/MM/yyyy]");
         String dateInput = scanner.nextLine();
         dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate date = LocalDate.parse(dateInput, dateFormatter);
-
+        try {
+            date = LocalDate.parse(dateInput, dateFormatter);
+        }catch (DateTimeParseException e){
+            System.out.println("Not a valid date");
+            return;
+        }
         System.out.println("What time would you like? [HH:mm]");
         String timeInput = scanner.nextLine();
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
