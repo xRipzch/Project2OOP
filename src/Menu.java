@@ -153,7 +153,7 @@ public class Menu {
         }
     }
 
-    private boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
+    public boolean isSlotAvailable(LocalDateTime start, LocalDateTime end) {
         if (start.getHour() >= 10 && start.getHour() < 18 && start.getDayOfWeek() != DayOfWeek.SATURDAY && start.getDayOfWeek() != DayOfWeek.SUNDAY && end.isAfter(start)) {
             for (Reservation reservation : reservations) {
                 if (start.isBefore(reservation.getTimeEnd()) && end.isAfter(reservation.getTimeStart())) {
@@ -168,7 +168,7 @@ public class Menu {
 
 
 
-    private void checkOut() {
+    public void checkOut() {
         Economy economy = new Economy(reservations);
 
         while (!checkoutComplete) {
@@ -190,7 +190,7 @@ public class Menu {
         }
     }
 
-    private Reservation findReservationByName(String name) {
+    public Reservation findReservationByName(String name) {
         for (Reservation reservation : reservations) {
             if (name.equals(reservation.getName())) {
                 return reservation;
@@ -199,7 +199,7 @@ public class Menu {
         return null;
     }
 
-    private void processReservation(Reservation reservation, Economy economy) {
+    public void processReservation(Reservation reservation, Economy economy) {
         System.out.println(reservation.getName() + " has a reservation starting at " + reservation.getTimeStart() + " TOTAL: " + reservation.getPrice());
         System.out.println("You have the following options" +
                 "\n1. Confirm payment" +
@@ -213,14 +213,14 @@ public class Menu {
         }
     }
 
-    private void confirmPayment(Reservation reservation, Economy economy) {
+    public void confirmPayment(Reservation reservation, Economy economy) {
         System.out.println("Payment confirmed");
         reservation.setHasPaid(true);
         economy.writeToEconFile();
         saveReservationsToFile();
     }
 
-    private void addProduct(Reservation reservation, Economy economy) {
+    public void addProduct(Reservation reservation, Economy economy) {
         boolean productAdded = false;
         while (!productAdded) {
             System.out.println("What product do you want to add?" +
@@ -249,7 +249,7 @@ public class Menu {
         }
     }
 
-    private void checkoutConfirmation() {
+    public void checkoutConfirmation() {
         System.out.println("Procced with checkout? (Y/N)");
         String proceed = scanner.next();
         if (proceed.equalsIgnoreCase("y")) {

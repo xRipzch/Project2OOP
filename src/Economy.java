@@ -36,7 +36,8 @@ public class Economy {
     public void printEconMenu() {
         users.logIn();
     }
-    public void searchEcon(){
+
+    public void searchEcon() {
         Scanner scanner = new Scanner(System.in);
         int total = 0;
         System.out.println("What day of the month?");
@@ -58,11 +59,19 @@ public class Economy {
                 foundReservations = true;
             }
         }
-        if (foundReservations)System.out.println("You have made " + total + "$ on the "+timeStart.toLocalDate());
+        for (int i = 0; i < reservations.size(); i++) {
+            if (reservations.get(i).getTimeStart().toLocalDate().isEqual(timeStart.toLocalDate())) {
+                if (reservations.get(i).getHasPaid()) {
+                    System.out.println(reservations.get(i).getName() + " has paid: " + reservations.get(i).getPrice() + " on the " + reservations.get(i).getTimeEnd());
+                }
+            }
+        }
+        if (foundReservations) System.out.println("You have made " + total + "$ on the " + timeStart.toLocalDate());
         if (!foundReservations) System.out.println("Nothing found on " + timeStart.toLocalDate());
 
 
     }
+
     public void writeToEconFile() {
 
         int total = 0;
@@ -70,18 +79,19 @@ public class Economy {
             if (reservationTotal.getHasPaid()) {
                 total = total + reservationTotal.getPrice();
             }
-        PrintStream ps = new PrintStream(System.out);
-        try {
-            ps = new PrintStream(new FileOutputStream("economy.txt"), true);
-            for (int i = 0; i < reservations.size(); i++) {
-                if(reservations.get(i).getHasPaid())
-                    ps.println(reservations.get(i).getName() + " has paid: " + reservations.get(i).getPrice() + " on the " + reservations.get(i).getTimeEnd());
-            }
+            PrintStream ps = new PrintStream(System.out);
+            try {
+                ps = new PrintStream(new FileOutputStream("economy.txt"), true);
+                for (int i = 0; i < reservations.size(); i++) {
+                    if (reservations.get(i).getHasPaid())
+                        ps.println(reservations.get(i).getName() + " has paid: " + reservations.get(i).getPrice() + " on the " + reservations.get(i).getTimeEnd());
+                }
 
-            ps.println("Total economy: " + total + "$");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } ps.close();
+                ps.println("Total economy: " + total + "$");
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            ps.close();
         }
         System.out.println("You have made a total of " + total + "$");
     }
