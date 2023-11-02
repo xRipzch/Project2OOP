@@ -56,7 +56,7 @@ public class Users {
         } else if (name.equals("9") || (password.equals("9"))) {
             ArrayList<Reservation> reservations = new ArrayList<>();
             Menu menu = new Menu(reservations);
-            menu.run();
+            menu.printMenu();
         } else {
             System.out.println("Wrong password or username");
             System.out.println("Try again");

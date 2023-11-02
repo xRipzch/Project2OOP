@@ -166,29 +166,26 @@ public class Menu {
         }
     }
 
-
-
     public void checkOut() {
-        Economy economy = new Economy(reservations);
+        System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
 
-        while (!checkoutComplete) {
-            System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
-            scanner.nextLine();
-            String name = scanner.nextLine();
+        while(!checkoutComplete) {
+            String name = scanner.nextLine().trim();
 
             if (name.equalsIgnoreCase("CANCEL")) {
                 return;
-            } else {
-                Reservation foundReservation = findReservationByName(name);
-                if (foundReservation != null) {
-                    processReservation(foundReservation, economy);
-                    checkoutComplete = true;
-                } else {
-                    System.out.println("Reservation not found. Please try again.");
-                }
+            }
+            Reservation foundReservation = findReservationByName(name);
+            if (foundReservation != null) {
+                processReservation(foundReservation, economy);
+                checkoutComplete = true;
+            }
+            if (foundReservation == null) {
+                System.out.println("Reservation not found. Please try again.");
             }
         }
     }
+
 
     public Reservation findReservationByName(String name) {
         for (Reservation reservation : reservations) {

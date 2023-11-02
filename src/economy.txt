@@ -1,2 +1,4 @@
 Anders has paid: 250 on the 2023-12-01T12:30
-Total economy: 250$
+tets 1 has paid: 250 on the 2023-12-23T13:00
+Julie has paid: 350 on the 2024-01-04T15:00
+Total economy: 850$
