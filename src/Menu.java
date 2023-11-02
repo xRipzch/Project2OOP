@@ -167,6 +167,7 @@ public class Menu {
     }
 
     public void checkOut() {
+        checkoutComplete = false;
         System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
 
         while (!checkoutComplete) {
