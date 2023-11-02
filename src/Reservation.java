@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 
 
 public class Reservation {
-    private String name; // todo make costumer class with name and gender
+    private String name;
     private LocalDateTime timeStart;
     private LocalDateTime timeEnd;
     private int price;
