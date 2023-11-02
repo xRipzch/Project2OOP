@@ -35,7 +35,7 @@ public class Menu {
         dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         try {
             date = LocalDate.parse(dateInput, dateFormatter);
-        }catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             System.out.println("Not a valid date");
             return;
         }
@@ -169,7 +169,7 @@ public class Menu {
     public void checkOut() {
         System.out.println("What's the name of the person you are checking out (or type 'CANCEL')?");
 
-        while(!checkoutComplete) {
+        while (!checkoutComplete) {
             String name = scanner.nextLine().trim();
 
             if (name.equalsIgnoreCase("CANCEL")) {
@@ -271,16 +271,25 @@ public class Menu {
             String endTime;
             String paymentStatus;
 
-            if (startMinute == 0) {startTime = startHour + ":00";}
-            else {startTime = startHour + ":" + startMinute;}
+            if (startMinute == 0) {
+                startTime = startHour + ":00";
+            } else {
+                startTime = startHour + ":" + startMinute;
+            }
 
-            if (endMinute == 0) {endTime = endHour + ":00";}
-            else {endTime = endHour + ":" + endMinute;}
+            if (endMinute == 0) {
+                endTime = endHour + ":00";
+            } else {
+                endTime = endHour + ":" + endMinute;
+            }
 
             String date = reservation.getTimeStart().getDayOfMonth() + "-" + reservation.getTimeStart().getMonthValue() + "-" + reservation.getTimeStart().getYear();
 
-            if (reservation.getHasPaid()) {paymentStatus = "has been paid!";}
-            else {paymentStatus = "has not been paid!";}
+            if (reservation.getHasPaid()) {
+                paymentStatus = "has been paid!";
+            } else {
+                paymentStatus = "has not been paid!";
+            }
 
             String time = "from " + startTime + " to " + endTime + " on " + date;
 
