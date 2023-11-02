@@ -39,14 +39,14 @@ public class Users {
         System.out.println("Enter password: ");
         String password = scanner.nextLine();
 
-        if (name.equals("harry") && password.equals("hairyharry")) {
+        if ((name.equals("harry") && password.equals("hairyharry"))) {
             System.out.println("Welcome Harry");
             econMenu();
             setName("Harry");
             setLoggedIn(true);
 
 
-        } else if (name.equals("revisor") && password.equals("hairyharry")) {
+        } else if ((name.equals("revisor") && password.equals("hairyharry"))) {
             System.out.println("Welcome Accountant");
             econMenu();
             setName("Accountant");

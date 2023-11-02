@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 
 
 public class Reservation {
-    private String name; // todo make costumer class with name and gender
+    private String name;
     private LocalDateTime timeStart;
     private LocalDateTime timeEnd;
     private int price;
@@ -38,9 +38,6 @@ public class Reservation {
         return hasPaid;
     }
 
-    public String getGender(){
-        return gender;
-    }
 
     public void setPrice(int price) {
         this.price = price;

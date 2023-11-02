@@ -189,7 +189,7 @@ public class Menu {
 
     public Reservation findReservationByName(String name) {
         for (Reservation reservation : reservations) {
-            if (name.equals(reservation.getName())) {
+            if (name.equalsIgnoreCase(reservation.getName())) {
                 return reservation;
             }
         }
@@ -343,7 +343,7 @@ public class Menu {
                 case 4 -> ledigeTider();
                 case 5 -> checkOut();
                 case 6 -> economy.printEconMenu();
-                case 9 -> System.exit(0);
+                case 9 -> running=false;
             }
         }
     }

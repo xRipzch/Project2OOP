@@ -44,7 +44,7 @@ public class FileHandling {
 
             fileScanner.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("File not found. Please contact your system admin");
         } catch (NumberFormatException e) {
             System.out.println("Error in file format.");
             e.printStackTrace();
