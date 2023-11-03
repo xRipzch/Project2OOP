@@ -336,6 +336,7 @@ public class Menu {
         while (running) {
             printMenu();
             int choose = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choose) {
                 case 1 -> addReservation();
